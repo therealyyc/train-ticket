@@ -1,26 +1,33 @@
 import React, { Component, Fragment } from 'react';
-import { Provider } from 'react-redux';
 import { connect } from 'react-redux'
 import 'normalize.css/normalize.css'
 import './App.css'
-import store from './store'
+
+
+import Header from '../common/Header'
+import DepartDate from './DepartDate'
+import HighSpeed from './HighSpeed'
+import Journey from './Journey'
+import Submit from './Submit'
 
 class App extends Component {
     render() {
         return (
-            <Provider store={store}>
                 <Fragment>
-                    aaaa
+                    <Header></Header>
+                    <Journey></Journey>
+                    <DepartDate></DepartDate>
+                    <HighSpeed></HighSpeed>
+                    <Submit></Submit>
                 </Fragment>
-            </Provider>
         );
     }
 }
 const mapStateToProps = (state) => {
-    
+    return {};
 }
 const mapDispathToProps = (dispatch) =>{
-    
+    return {};
 }
 export default connect(mapStateToProps, mapDispathToProps)(App)
 

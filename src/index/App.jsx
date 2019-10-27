@@ -1,5 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux'
+import {bindActionCreators } from 'redux'
 import 'normalize.css/normalize.css'
 import './App.css'
 
@@ -10,24 +11,50 @@ import HighSpeed from './HighSpeed'
 import Journey from './Journey'
 import Submit from './Submit'
 
-class App extends Component {
-    render() {
+import {
+    exchangeFromTo,
+    showCitySelector
+} from './actions';
+
+function App(props) {
+    console.log('..App', props)
+    const {
+        from,
+        to,
+        dispatch
+    } = props
+
+    const onBack = useCallback(() => {
+        window.history.back()
+    }, [])
+
+    const cbs = useMemo(() => {
+        return bindActionCreators({
+            exchangeFromTo,
+            showCitySelector
+        },dispatch)
+    }, [])
+    
+    // const onShowCitySelector = () => {
+    //     dispatch(showCitySelector(true))
+    // }
         return (
                 <Fragment>
-                    <Header></Header>
-                    <Journey></Journey>
+                    <Header title={'火车票'} onBack={onBack}></Header>
+                <Journey from={from} to={to} {...cbs}></Journey>
                     <DepartDate></DepartDate>
                     <HighSpeed></HighSpeed>
                     <Submit></Submit>
                 </Fragment>
         );
-    }
 }
 const mapStateToProps = (state) => {
-    return {};
+    return state;
 }
 const mapDispathToProps = (dispatch) =>{
-    return {};
+    return {
+        dispatch
+    };
 }
 export default connect(mapStateToProps, mapDispathToProps)(App)
 

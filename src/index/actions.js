@@ -44,7 +44,6 @@ export function setCityData(cityDate) {
  */
 export function toggleHighSpeed() {
     return (dispatch, getState) => {
-        console.log('...test',dispatch,getState)
         const { highSpeed } = getState();
         dispatch({
             type: ACTION_SET_HIGH_SPEED,

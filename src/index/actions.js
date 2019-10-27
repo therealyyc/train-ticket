@@ -114,4 +114,41 @@ export function exchangeFromTo() {
 }
 
 
+export function fetchCityData() {
+    return (dispatch, getState) => {
+        const { isLoadingCityData } = getState()
+        
+        if (isLoadingCityData) {
+            return;
+        }
+
+        const cache = JSON.parse(localStorage.getItem('city_data_cache'))
+        if (cache) {
+            if (Date.now() < cache.expire) {
+                dispatch(setCityData(cache.data))
+                return;
+            }
+            dispatch(setIsLoadingCityData(true))
+        }
+        
+        fetch('/rest/cities?_' + Date.now())
+            .then(res => res.json())
+            .then(cityData => {
+                dispatch(setCityData(cityData))
+
+                localStorage.setItem(
+                    'city_data_cache', JSON.stringify({
+                        expire: Date.noew() + 60 * 1000,
+                        data:cityData
+                    })
+                )
+
+                dispatch(setIsLoadingCityData(false))
+            })
+            .catch(() => {
+                dispatch(setIsLoadingCityData(false))
+            })
+    }
+}
+
 

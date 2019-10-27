@@ -6,6 +6,7 @@ import './App.css'
 
 
 import Header from '../common/Header'
+import CitySelector from '../common/CitySelector'
 import DepartDate from './DepartDate'
 import HighSpeed from './HighSpeed'
 import Journey from './Journey'
@@ -13,7 +14,9 @@ import Submit from './Submit'
 
 import {
     exchangeFromTo,
-    showCitySelector
+    showCitySelector,
+    hideCitySelector,
+    fetchCityData
 } from './actions';
 
 function App(props) {
@@ -21,6 +24,9 @@ function App(props) {
     const {
         from,
         to,
+        isCitySelectorVisible,
+        cityData,
+        isLoadingCityData,
         dispatch
     } = props
 
@@ -34,14 +40,31 @@ function App(props) {
             showCitySelector
         },dispatch)
     }, [])
+
+    const citySelectorCbs = useMemo(() => {
+        return bindActionCreators({
+            onBack: hideCitySelector,
+            fetchCityData
+        },dispatch)
+    },[])
     
     // const onShowCitySelector = () => {
     //     dispatch(showCitySelector(true))
     // }
         return (
                 <Fragment>
-                    <Header title={'火车票'} onBack={onBack}></Header>
-                <Journey from={from} to={to} {...cbs}></Journey>
+                <Header title={'火车票'} onBack={onBack}></Header>
+                <form className="form">
+                    <Journey from={from} to={to} {...cbs}></Journey>
+                </form>
+                <CitySelector
+                    show={isCitySelectorVisible}
+                    cityData={cityData}
+                    isLoadingCityData={isLoadingCityData}
+                    {...citySelectorCbs}
+                >
+                    
+                </CitySelector>
                     <DepartDate></DepartDate>
                     <HighSpeed></HighSpeed>
                     <Submit></Submit>

@@ -16,7 +16,9 @@ import {
     exchangeFromTo,
     showCitySelector,
     hideCitySelector,
-    fetchCityData
+    fetchCityData,
+    setCityData,
+    setSelectedCity
 } from './actions';
 
 function App(props) {
@@ -29,6 +31,8 @@ function App(props) {
         isLoadingCityData,
         dispatch
     } = props
+
+    console.log('cityData',cityData)
 
     const onBack = useCallback(() => {
         window.history.back()
@@ -44,7 +48,8 @@ function App(props) {
     const citySelectorCbs = useMemo(() => {
         return bindActionCreators({
             onBack: hideCitySelector,
-            fetchCityData
+            fetchCityData,
+            onSelect:setSelectedCity
         },dispatch)
     },[])
     

@@ -7,6 +7,7 @@ import './App.css'
 
 import Header from '../common/Header'
 import CitySelector from '../common/CitySelector'
+import DateSelector from '../common/DateSelector'
 import DepartDate from './DepartDate'
 import HighSpeed from './HighSpeed'
 import Journey from './Journey'
@@ -18,7 +19,9 @@ import {
     hideCitySelector,
     fetchCityData,
     setCityData,
-    setSelectedCity
+    setSelectedCity,
+    showDateSelector,
+    
 } from './actions';
 
 function App(props) {
@@ -29,10 +32,12 @@ function App(props) {
         isCitySelectorVisible,
         cityData,
         isLoadingCityData,
-        dispatch
+        dispatch,
+        departDate,
+        isDateSelectorVisible
     } = props
 
-    console.log('cityData',cityData)
+    
 
     const onBack = useCallback(() => {
         window.history.back()
@@ -53,9 +58,11 @@ function App(props) {
         },dispatch)
     },[])
     
-    // const onShowCitySelector = () => {
-    //     dispatch(showCitySelector(true))
-    // }
+    const dateSelectorCbs = useMemo(() => {
+        return bindActionCreators({
+            onClick:showDateSelector
+        },dispatch)
+    },[])
         return (
                 <Fragment>
                 <Header title={'火车票'} onBack={onBack}></Header>
@@ -70,7 +77,15 @@ function App(props) {
                 >
                     
                 </CitySelector>
-                    <DepartDate></DepartDate>
+                <DateSelector
+                    show={isDateSelectorVisible}
+                    {...dateSelectorCbs}
+                >
+
+                </DateSelector>
+                <DepartDate
+                    time={departDate}
+                    {...dateSelectorCbs}></DepartDate>
                     <HighSpeed></HighSpeed>
                     <Submit></Submit>
                 </Fragment>

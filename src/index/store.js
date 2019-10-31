@@ -20,6 +20,7 @@ const store = createStore(combineReducers(reducers),
         cityData: null,//城市的所有数据
         isLoadingCityData: false,//当前是否加载城市数据
         isDateSelectorVisible: false,//日期选择浮层的开关
+        departDate: Date.now(),
         highSpeed: false//是否选择高铁动车
     },
     composeEnhancers(

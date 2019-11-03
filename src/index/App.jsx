@@ -21,8 +21,10 @@ import {
     setCityData,
     setSelectedCity,
     showDateSelector,
-    
+    hideDateSelector,
+    setDepartDate
 } from './actions';
+import { h0 } from '../common/fp';
 
 function App(props) {
     console.log('..App', props)
@@ -56,13 +58,34 @@ function App(props) {
             fetchCityData,
             onSelect:setSelectedCity
         },dispatch)
-    },[])
+    }, [])
+
+    
+    const departDateCbs = useMemo(() => {
+        return bindActionCreators(
+            {
+                onClick: showDateSelector,
+            },
+            dispatch
+        );
+    }, []);
     
     const dateSelectorCbs = useMemo(() => {
         return bindActionCreators({
-            onClick:showDateSelector
+            onBack: hideDateSelector,
         },dispatch)
-    },[])
+    }, [])
+    
+    const onSelectDate = useCallback(day => {
+        if (!day) {
+            return;
+        }
+        if (day < h0()) {
+            return;
+        }
+        dispatch(setDepartDate(day))
+        dispatch(hideDateSelector())
+    })
         return (
                 <Fragment>
                 <Header title={'火车票'} onBack={onBack}></Header>
@@ -80,12 +103,14 @@ function App(props) {
                 <DateSelector
                     show={isDateSelectorVisible}
                     {...dateSelectorCbs}
+                    onSelect = {onSelectDate}
                 >
 
                 </DateSelector>
                 <DepartDate
                     time={departDate}
-                    {...dateSelectorCbs}></DepartDate>
+                    {...departDateCbs}>
+                </DepartDate>
                     <HighSpeed></HighSpeed>
                     <Submit></Submit>
                 </Fragment>

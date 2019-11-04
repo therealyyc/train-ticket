@@ -5,22 +5,25 @@ import 'normalize.css/normalize.css'
 import './App.css'
 import store from './store'
 
-class App extends Component {
-    render() {
-        return (
-            <Provider store={store}>
-                <Fragment>
-                    aaaa
-                </Fragment>
-            </Provider>
-        );
-    }
-}
-const mapStateToProps = (state) => {
-    
-}
-const mapDispathToProps = (dispatch) =>{
-    
-}
-export default connect(mapStateToProps, mapDispathToProps)(App)
 
+import Nav from '../common/Nav'
+import List from './List'
+import Bottom from './Bottom'
+
+function App(props) {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+
+const mapStateToProps = () => {
+    
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return null
+}
+export default connect(mapStateToProps,mapDispatchToProps)(App)

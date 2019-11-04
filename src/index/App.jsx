@@ -22,7 +22,8 @@ import {
     setSelectedCity,
     showDateSelector,
     hideDateSelector,
-    setDepartDate
+    setDepartDate,
+    toggleHighSpeed
 } from './actions';
 import { h0 } from '../common/fp';
 
@@ -36,7 +37,8 @@ function App(props) {
         isLoadingCityData,
         dispatch,
         departDate,
-        isDateSelectorVisible
+        isDateSelectorVisible,
+        highSpeed
     } = props
 
     
@@ -86,11 +88,26 @@ function App(props) {
         dispatch(setDepartDate(day))
         dispatch(hideDateSelector())
     })
+
+    const highSpeedCbs = useMemo(() => {
+        return bindActionCreators(
+            {
+                toggle: toggleHighSpeed,
+            },
+            dispatch
+        );
+    }, []);
         return (
                 <Fragment>
                 <Header title={'火车票'} onBack={onBack}></Header>
-                <form className="form">
+                <form className="form" action='./query.html' className="form">
                     <Journey from={from} to={to} {...cbs}></Journey>
+                    <DepartDate
+                    time={departDate}
+                    {...departDateCbs}>
+                    </DepartDate>
+                    <HighSpeed highSpeed={highSpeed} {...highSpeedCbs} />
+                    <Submit></Submit>
                 </form>
                 <CitySelector
                     show={isCitySelectorVisible}
@@ -107,12 +124,7 @@ function App(props) {
                 >
 
                 </DateSelector>
-                <DepartDate
-                    time={departDate}
-                    {...departDateCbs}>
-                </DepartDate>
-                    <HighSpeed></HighSpeed>
-                    <Submit></Submit>
+                
                 </Fragment>
         );
 }

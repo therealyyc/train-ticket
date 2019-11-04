@@ -4,7 +4,12 @@ import './Submit.css'
 function Submit() {
     return (
         <Fragment>
-            Submit
+            <div className="submit">
+            <button type="submit" className="submit-button">
+                {' '}
+                搜索{' '}
+            </button>
+            </div>
         </Fragment>
     )
 }

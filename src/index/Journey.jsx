@@ -28,7 +28,7 @@ function Journey(props) {
                 <div className="journey_station" onClick={() => showCitySelector(false)}>
                     <input
                         type="input"
-                        name="from"
+                        name="to"
                         value={to}
                         readOnly
                         className="journey-input journey-to"

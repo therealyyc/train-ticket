@@ -19,11 +19,11 @@ function App(props) {
 }
 
 
-const mapStateToProps = () => {
-    
+const mapStateToProps = (state) => {
+    return state;
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return null
+    return {dispatch}
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)

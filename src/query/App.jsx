@@ -1,7 +1,7 @@
 import React, { Component, Fragment, useCallback, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { connect } from 'react-redux'
-import Header from '../common/Header.jsx'
+
 import 'normalize.css/normalize.css'
 import './App.css'
 import store from './store'
@@ -10,6 +10,7 @@ import URI from 'urijs'
 import dayjs from 'dayjs';
 
 import { h0 } from '../common/fp';
+import Header from '../common/Header.jsx'
 import Nav from '../common/Nav'
 import List from './List'
 import Bottom from './Bottom'
@@ -25,6 +26,8 @@ import {
     setTrainTypes,
     setDepartStations,
     setArriveStations,
+    prevDate,
+    nextDate,
 } from './actions'
 
 function App(props) {
@@ -145,13 +148,35 @@ function App(props) {
     ])
 
     //使用参数获取异步请求来加载车次列表
+    const isPrevDisabled = h0(departDate) <= h0()
+    const isNextDisabled = h0(departDate) - h0() >= 20 * 86400 * 1000
+
+    const prev = useCallback(() => {
+        if (isPrevDisabled) {
+            return;
+        }
+        dispatch(prevDate())
+    }, [isPrevDisabled])
+    
+    const next = useCallback(() => {
+        if (isNextDisabled) {
+            return;
+        }
+        dispatch(nextDate())
+    },[isNextDisabled])
     
     return (
         <div>
             <div className="header-wrapper">
                 <Header title={`${from} - ${to}`} onBack={onBack}></Header>
             </div>
-
+            <Nav
+                date={departDate}
+                prev={prev}
+                next={next}
+                isPrevDisabled={isPrevDisabled}
+                isNextDisabled={isNextDisabled}
+            />
         </div>
     )
 }

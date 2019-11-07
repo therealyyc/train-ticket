@@ -1,4 +1,5 @@
-import React, { Component, Fragment, useCallback, useEffect } from 'react';
+import React, { Component, Fragment, useCallback, useEffect, useMemo } from 'react';
+import { bindActionCreators } from 'redux'
 import { Provider } from 'react-redux';
 import { connect } from 'react-redux'
 
@@ -28,11 +29,16 @@ import {
     setArriveStations,
     prevDate,
     nextDate,
+    toggleOrderType,
+    toggleHighSpeed,
+    toggleOnlyTickets,
+    toggleIsFiltersVisible,
 } from './actions'
 
 function App(props) {
 
     const {
+        trainList,
         dispatch,
         from,
         to,
@@ -47,6 +53,7 @@ function App(props) {
         checkedArriveStations,
         departTimeStart,
         departTimeEnd,
+        isFiltersVisible,
         arriveTimeStart,
         arriveTimeEnd
     } = props
@@ -163,7 +170,19 @@ function App(props) {
             return;
         }
         dispatch(nextDate())
-    },[isNextDisabled])
+    }, [isNextDisabled])
+    
+    const bottomCbs = useMemo(() => {
+        return bindActionCreators(
+            {
+                toggleOrderType,
+                toggleHighSpeed,
+                toggleOnlyTickets,
+                toggleIsFiltersVisible,
+            },
+            dispatch
+        )
+    },[])
     
     return (
         <div>
@@ -176,6 +195,14 @@ function App(props) {
                 next={next}
                 isPrevDisabled={isPrevDisabled}
                 isNextDisabled={isNextDisabled}
+            />
+            <List list={trainList} />
+            <Bottom
+                orderType ={orderType}
+                onlyTickets ={onlyTickets}
+                highSpeed={highSpeed}
+                isFiltersVisible={isFiltersVisible}
+                {...bottomCbs}
             />
         </div>
     )

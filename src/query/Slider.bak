@@ -1,0 +1,166 @@
+import React, { memo, useState, useMemo, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import leftPad from 'left-pad';
+// import useWinSize from '../common/useWinSize';
+import './Slider.css';
+
+const Slider = memo(function Slider(props) {
+    const {
+        title,
+        currentStartHours,
+        currentEndHours,
+        onStartChanged,
+        onEndChanged,
+    } = props
+
+    const startHandle = useRef()
+    const endHandle = useRef()
+
+    const range = useRef()
+    const rangeWidth = useRef()
+
+    const lastStartX = useRef()
+
+
+
+    const [start, setStart] = useState(() => {
+        return 0 / 24 * 100
+    })
+    const [end, startEnd] = useState(() => {
+        return currentEndHours / 24 * 100
+    })
+
+    console.log(start)
+
+    
+    const startPercent = useMemo(() => {
+        if (start > 100) {
+          return 100
+        }  
+        if (start < 0) {
+            return 0
+        }
+        return start
+    }, [start])
+    
+    const endPercent = useMemo(() => {
+        if (end > 100) {
+          return 100
+        }  
+        if (end < 0) {
+            return 0
+        }
+        return end
+    }, [end])
+    /**
+     * 比例用于对滑块的位置进行定位，但显示
+     */
+    const startHours = useMemo(() => {
+        return Math.round(startPercent / 100 * 24)
+    })
+
+    const endHours = useMemo(() => {
+        return Math.round(endPercent / 100 * 24)
+    })
+
+    const startText = useMemo(() => {
+        return leftPad(startHours,2,0) + ':00'
+    },[startHours])
+
+    const endText = useMemo(() => {
+        return leftPad(endHours,2,0) + ':00'
+    }, [endHours])
+
+    function onStartTouchBegin(e) {
+        const touch = e;
+        //clientLeft offsetLeft
+        lastStartX.current = touch.clientX
+        console.log('currentPosition',lastStartX.current)
+        document.addEventListener(
+            'mousemove',
+            onStartTouchMove
+        )
+        document.addEventListener(
+            'mouseup',
+            function () {
+                lastStartX.current = touch.clientX;
+                document.removeEventListener('mousemove',onStartTouchMove)
+            }, {
+                once:true
+            }
+        )
+        // console.log(lastStartX.current)
+    }
+
+    function onStartTouchMove(e) {
+        const touch = e;
+        const distance = touch.clientX - lastStartX.current
+        console.log('distance', ( distance/rangeWidth.current ) * 100)
+        setStart(start => start + (distance / rangeWidth.current) * 100)
+        
+    }
+
+    useEffect(() => {
+        console.log(range.current)
+        rangeWidth.current = parseFloat(
+            range.current.clientWidth,
+        )
+    },[])
+    useEffect(() => {
+        startHandle.current.addEventListener(
+            'mousedown',
+            onStartTouchBegin
+        )
+        
+        // startHandle.current.addEventListener(
+        //     'mouseup',
+        //     onEndTouchBegin
+        // )
+        // startHandle.current.addEventListener(
+        //     'mousemove',
+        //     onEndTouchMove
+        // )
+
+        return () => {
+            
+        }
+    })
+
+
+    
+    
+    return (
+        <div className="range-slider">
+            <div className="slider" ref={ range }>
+                <div className="slider-range" style={{
+                    left: startPercent + '%',
+                    width:endPercent - startPercent + '%'
+                }}>
+                </div>
+                <i
+                    ref={startHandle}
+                    className="slider-handle"
+                    style={{
+                        left:startPercent + '%'
+                    }}
+                >
+                    <span>{startText}</span>
+                </i>
+                {/* <i
+                    ref={endHandle}
+                    className="slider-handle"
+                    style={{
+                        left:endPercent + '%'
+                    }}
+                >
+                    <span>{endText}</span>
+                </i> */}
+            </div>
+        </div>
+    )
+    
+
+
+})
+
+export default Slider;

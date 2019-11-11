@@ -96,6 +96,7 @@ function App(props) {
         if (!searchParsed) {
             return;
         }
+        console.log(departTimeStart,departTimeEnd,arriveTimeStart,arriveTimeEnd)
         const url = new URI('/rest/query')
         .setSearch('from', from)
         .setSearch('to', to)

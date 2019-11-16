@@ -1,13 +1,16 @@
-import React, { Component, Fragment, useEffect, useCallback } from 'react';
+import React, { Component, Fragment, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { connect } from 'react-redux'
 import 'normalize.css/normalize.css'
+import {bindActionCreators} from 'redux'
 import URI from 'urijs'
 import useNav from '../common/useNav'
 import dayjs from 'dayjs'
 import Detail from '../common/Detail'
 import Candidate from './Candidate'
-import Schedule from './Schedule'
+// import Schedule from './Schedule'
 import './App.css'
+
+import { TrainContext } from './context';
 
 import Header from '../common/Header'
 import Nav from '../common/Nav'
@@ -24,9 +27,12 @@ import {
     setArriveTimeStr,
     setArriveDate,
     setDurationStr,
+    toggleIsScheduleVisible,
     setTickets,
 } from './actions'
 import { h0 } from '../common/fp';
+
+const Schedule = lazy(()=> import('./Schedule'))
 
 
 function App(props) {
@@ -42,6 +48,7 @@ function App(props) {
         tickets,
         isScheduleVisible,
         searchParsed,
+        
         dispatch
     } = props
 
@@ -81,6 +88,12 @@ function App(props) {
     useEffect(() => {
         document.title = trainNumber;
     }, [trainNumber]);
+
+    const detailCbs = useMemo(() => {
+        return bindActionCreators({
+            toggleIsScheduleVisible
+        },dispatch)
+    }, [])
 
     useEffect(() => {
         if (!searchParsed) {
@@ -142,10 +155,34 @@ function App(props) {
                     arriveTimeStr = {arriveTimeStr}
                     departStation = {departStation}
                     arriveStation={arriveStation}
-                    trainNumber = {trainNumber}
+                    trainNumber={trainNumber}
+                    {...detailCbs}
                 />
-                <Candidate></Candidate>
-                <Schedule></Schedule>
+                
+                <TrainContext.Provider
+                    value={{
+                        trainNumber,
+                        departStation,
+                        arriveStation,
+                        departDate,
+                    }}
+                >
+                <Candidate
+                    tickets={tickets}
+                    />
+                </TrainContext.Provider>
+                {isScheduleVisible &&
+                    <Suspense fallback={<div>loading....</div>}>
+                        <div className='mask' onClick={() => { dispatch(toggleIsScheduleVisible()) }}>
+                            <Schedule
+                                date={departDate}
+                                trainNumber={trainNumber}
+                                departStation={departStation}
+                                arriveStation={arriveStation}
+                            />
+                        </div>
+                    </Suspense>
+                }
 
             </div>
             

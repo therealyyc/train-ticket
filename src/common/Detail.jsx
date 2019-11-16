@@ -13,9 +13,11 @@ function Detail(props) {
         arriveTimeStr,
         departStation,
         arriveStation,
-        trainNumber
+        trainNumber,
+        toggleIsScheduleVisible
     } = props
 
+    console.log('toggleIsScheduleVisible',toggleIsScheduleVisible)
     function format(d) {
         const date = dayjs(d);
     
@@ -37,7 +39,7 @@ function Detail(props) {
                     <p className="train-name">{trainNumber}</p>
                     <p className='train-mid'>
                         <span className='left'></span>
-                        <span className='schedule'>时刻表</span>
+                        <span className='schedule' onClick={toggleIsScheduleVisible}>时刻表</span>
                         <span className='right'></span>
                     </p>
                     <p className="train-time">耗时{durationStr}</p>
